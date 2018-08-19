@@ -68,29 +68,22 @@ function decryptKey (crypt, privkey) {
   return privkey.decrypt(crypt, 'buffer');
 }
 
-function sign (message, privkey) {
-  return privkey.sign(message, BASE64, UTF8);
-}
-
-function verify (message, signature, bobPubkey) {
-  const bobKey = makePubkey(bobPubkey);
-  return bobKey.verify(message, signature, UTF8, BASE64);
-}
-
 async function writeMessage (payload, bobPubkey, algo, keyLen, ivLen) {
   const [ ciphered, key, iv ] = await cipher(payload, algo, keyLen, ivLen);
   const encryptedKey = encryptKey(key, bobPubkey);
 
   return {
     payload: ciphered,
+    algorithm: algo,
     key: encryptedKey,
     iv: iv
   };
 }
 
-async function readMessage (message, privkey, algo) {
+async function readMessage (message, privkey) {
   const key = decryptKey(message.key, privkey);
-  const contents = await decipher(message.payload, algo, key, message.iv);
+  const contents = await decipher(
+    message.payload, message.algorithm, key, message.iv);
 
   return contents;
 }
@@ -120,7 +113,7 @@ class Alice {
   }
 
   read (message) {
-    return readMessage(message, this._keyPair, this._options.aesAlgorithm);
+    return readMessage(message, this._keyPair);
   }
 }
 
