@@ -34,8 +34,11 @@ Returns a new instance of Alice.
 
 #### options _[Object]_
 `rsaKeyBits` _[Integer]_: Length of the RSA keypair. Default: `2048`.
+
 `aesAlgorithm` _[String]_: AES algorithm to pass to node's `crypto.createCipheriv` and `crypto.createDecipheriv` functions. Default: `aes256`.
+
 `aesKeyBytes` _[Integer]_: Length of the AES key to be randomly generated with each encryption. Default: `32`.
+
 `aesIvBytes` _[Integer]_: Length of the AES initialization vector to be randomly generated with each encryption. Default: `16`.
 
 ### instance.pubkey
@@ -44,7 +47,7 @@ The public key string to be shared between instances of Alice over insecure chan
 ### instance.write(message _[String]_, pubkey _[String]_)
 Returns an object that can be sent over insecure channels to the owner of _pubkey_.
 
-### instance.read(ciphered _[Object}_)
+### instance.read(ciphered _[Object]_)
 Returns a string containing the original message.
 
 ## Example server usage

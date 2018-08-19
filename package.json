@@ -1,6 +1,6 @@
 {
   "name": "alice-crypto",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Cryptographic message exchanging protocol",
   "main": "index.js",
   "scripts": {
