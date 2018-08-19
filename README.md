@@ -35,7 +35,7 @@ Returns a new instance of Alice.
 #### options _[Object]_
 `rsaKeyBits` _[Integer]_: Length of the RSA keypair. Default: `2048`.
 
-`aesAlgorithm` _[String]_: AES algorithm to pass to node's `crypto.createCipheriv` and `crypto.createDecipheriv` functions. Default: `aes256`.
+`aesAlgorithm` _[String]_: AES algorithm to pass to node's `crypto.createCipheriv` and `crypto.createDecipheriv` functions. Default: `"aes256"`.
 
 `aesKeyBytes` _[Integer]_: Length of the AES key to be randomly generated with each encryption. Default: `32`.
 
