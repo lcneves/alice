@@ -1,0 +1,28 @@
+{
+  "name": "alice-crypto",
+  "version": "1.0.0",
+  "description": "Cryptographic message exchanging protocol",
+  "main": "index.js",
+  "scripts": {
+    "test": "node test.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lcneves/alice.git"
+  },
+  "keywords": [
+    "cryptography",
+    "AES",
+    "AES-256",
+    "RSA"
+  ],
+  "author": "Lucas Neves <lcneves@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/lcneves/alice/issues"
+  },
+  "homepage": "https://github.com/lcneves/alice#readme",
+  "dependencies": {
+    "node-rsa": "^1.0.1"
+  }
+}
