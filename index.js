@@ -68,19 +68,35 @@ function decryptKey (crypt, privkey) {
   return privkey.decrypt(crypt, 'buffer');
 }
 
-async function writeMessage (payload, bobPubkey, algo, keyLen, ivLen) {
+function signMessage (message, privkey) {
+  return privkey.sign(message, BASE64, BASE64);
+}
+
+function verifyMessage (message, signature, bobPubkey) {
+  const bobKey = makePubkey(bobPubkey);
+  const verified = bobKey.verify(message, signature, BASE64, BASE64);
+
+  assert(verified, 'Signature cannot verify message!');
+}
+
+async function writeMessage (payload, bobPubkey, algo, keyLen, ivLen, privkey) {
   const [ ciphered, key, iv ] = await cipher(payload, algo, keyLen, ivLen);
   const encryptedKey = encryptKey(key, bobPubkey);
+  const signature = privkey ? signMessage(ciphered, privkey) : null;
 
   return {
     payload: ciphered,
+    signature: signature,
     algorithm: algo,
     key: encryptedKey,
     iv: iv
   };
 }
 
-async function readMessage (message, privkey) {
+async function readMessage (message, privkey, bobPubkey) {
+  if (bobPubkey)
+    verifyMessage(message.payload, message.signature, bobPubkey);
+
   const key = decryptKey(message.key, privkey);
   const contents = await decipher(
     message.payload, message.algorithm, key, message.iv);
@@ -107,13 +123,16 @@ class Alice {
     return this._pubkey;
   }
 
-  write (payload, bobPubkey) {
-    return writeMessage(payload, bobPubkey, this._options.aesAlgorithm,
-      this._options.aesKeyBytes, this._options.aesIvBytes);
+  write (payload, bobPubkey, sign=false) {
+    const privkey = sign ? this._keyPair : null;
+
+    return writeMessage(
+      payload, bobPubkey, this._options.aesAlgorithm,
+      this._options.aesKeyBytes, this._options.aesIvBytes, privkey);
   }
 
-  read (message) {
-    return readMessage(message, this._keyPair);
+  read (message, bobPubkey=null) {
+    return readMessage(message, this._keyPair, bobPubkey);
   }
 }
 

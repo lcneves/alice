@@ -30,25 +30,26 @@ assert(decipheredMessage === secretMessage);
 
 ### new Alice(options)
 Returns a new instance of Alice.
+
 **Note:** It may take a few seconds to generate the RSA keypair, which is a **blocking** operation. It is recommended to create the new instance as a singleton during your app's initialization routine.
 
-#### options _[Object]_
-`rsaKeyBits` _[Integer]_: Length of the RSA keypair. Default: `2048`.
+#### options _Object_
+`rsaKeyBits` _Integer_: Length of the RSA keypair. Default: `2048`.
 
-`aesAlgorithm` _[String]_: AES algorithm to pass to node's `crypto.createCipheriv` and `crypto.createDecipheriv` functions. Default: `"aes256"`.
+`aesAlgorithm` _String_: AES algorithm to pass to node's `crypto.createCipheriv` and `crypto.createDecipheriv` functions. Default: `"aes256"`.
 
-`aesKeyBytes` _[Integer]_: Length of the AES key to be randomly generated with each encryption. Default: `32`.
+`aesKeyBytes` _Integer_: Length of the AES key to be randomly generated with each encryption. Default: `32`.
 
-`aesIvBytes` _[Integer]_: Length of the AES initialization vector to be randomly generated with each encryption. Default: `16`.
+`aesIvBytes` _Integer_: Length of the AES initialization vector to be randomly generated with each encryption. Default: `16`.
 
 ### instance.pubkey
 The public key string to be shared between instances of Alice over insecure channels.
 
-### instance.write(message _[String]_, pubkey _[String]_)
-Returns an object that can be sent over insecure channels to the owner of _pubkey_.
+### instance.write(message _String_, pubkey _String_, [sign _Boolean_])
+Returns an object that can be sent over insecure channels to the owner of _pubkey_. If `sign` is set to `true`, will include signature.
 
-### instance.read(ciphered _[Object]_)
-Returns a string containing the original message.
+### instance.read(ciphered _Object_, [pubkey _String_])
+Returns a string containing the original message. If `pubkey` is present, will verify the signature of the message and throw an error if invalid.
 
 ## Example server usage
 This sample would allow two servers running instances of Alice to communicate securely over open channels.
@@ -96,4 +97,5 @@ app.listen(80);
 sendMessage(importantMessage, bobHostname);
 ```
 
-## License: MIT
+## License
+MIT

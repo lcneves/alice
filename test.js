@@ -3,9 +3,12 @@
 const assert = require('assert');
 const Alice = require('.');
 
-async function send (from, to, message) {
-  const encrypted = await from.write(message, to.pubkey);
-  const decrypted = await to.read(encrypted);
+async function send (from, to, message, sign=false) {
+  const encrypted = await from.write(message, to.pubkey, sign);
+
+  const decrypted = sign
+  ? await to.read(encrypted, from.pubkey)
+  : await to.read(encrypted);
 
   assert(decrypted === message, 'Decripted is different from message');
 }
@@ -20,6 +23,8 @@ async function test (params) {
 
     await send(alice, bob, payload);
     await send(bob, alice, payload);
+    await send(alice, bob, payload, true);
+    await send(bob, alice, payload, true);
   } catch (err) {
     throw new Error(`Test failed!
       Parameters: ${JSON.stringify(params)}
@@ -29,6 +34,7 @@ async function test (params) {
 }
 
 const tests = [
+  { alice: { rsaKeyBits: 512 }, bob: { rsaKeyBits: 512 } },
   {},
   { alice: { rsaKeyBits: 512 }, bob: { rsaKeyBits: 4096 } },
   {
